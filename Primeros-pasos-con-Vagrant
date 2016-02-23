@@ -1,0 +1,84 @@
+﻿#Segun el seminario donde se expuso Vagrant como un programa que nos permite configurar y usar ambientes virtuales el mismo 
+
+#concepto que docker. Ahora vamos a seguir los siguientes pasos para crear y configurar nuestro ambientes virtuales.
+
+
+# 1.- Primero tenemos que tener instalado el virtualbox o MVware, es mi coso se instaló el virtualbox
+
+
+$ > sudo apt-get update
+$ > sudo apt-get install virtualbox dkms
+
+
+
+# 2.- Ahora instalamos vagrant
+
+
+$ > sudo apt-get -y install vagrant
+
+# 
+3.- Descargamos los sistemas operativos que desear utilizar el primero puede ser 12.04
+
+
+$ > vagrant box add precise32 http://files.vagrantup.com/precise32.box
+
+
+**Tambien puede ser el ununtu 14.04**
+
+
+$ > vagrant box add ubuntu/trusty64 https://vagrantcloud.com/ubuntu/boxes/trusty64
+
+
+# 3.- Luego que Vagrant está instalado y ya tenemos en nuestro ordenador las cajas (boxes), vamos a crear nuestra primera #máquina virtual Ubuntu 12.04. Primero creamos un directorio para ella y nos movemos allí
+	
+
+$ > mkdir vagrant-ubuntu
+$ > cd vagrant-ubuntu
+
+
+# 4.- Creamos el archivo de configuración de vagrant
+
+
+$ > vagrant init
+
+
+# 5.- Editamos la línea config.vm.box = "base" por config.vm.box = "ubuntu/trusty64" de ese archivo, denominado Vagrantfile para que Vagrant busque el box de Ubuntu 14.04 que descargamos anteriormente
+
+
+$ > sudo vim Vagrantfile
+
+
+# 6.- Ahora iniciamos la máquina virtual
+
+
+$ > vagrant up
+
+
+# 7.- Y nos conectamos a ella por ssh
+
+
+$ > vagrant ssh
+
+# Para salir del ssh pones exit
+
+
+# 8.- Para apagar la maquina
+
+$ > vagrant halt
+
+
+# 9.- Para eliminar la máquina virtual
+
+
+$ > vagrant destroy
+
+
+
+# Para disponer de mas boxes ir a la pagina https://vagrantcloud.com/boxes/search
+
+$ vagrant ssh Conexion SSH a la maquina virtual (virtual machine, VM)
+$ vagrant up Arranca/reanuda la VM
+$ vagrant halt Suspende la VM. Podemos reanudarla de nuevo con vagrant up
+$ vagrant destroy Elimina la VM. La podremos arrancar/crear otra vez con vagrant up
+$ vagrant provision Reconfigura (reaprovisiona) la VM después de algún cambio en el código fuente.
+$ vagrant reload Recarga (relanza) la VM (útil si hemos hecho cambios en la red o las carpetas compartidas).

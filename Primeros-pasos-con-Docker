@@ -1,0 +1,272 @@
+﻿#Después del seminario 1 donde se pudo apreciar la idea princiapal de docker solo nos queda ir a la practica. Para ellos #seguimos los sigueintes pasos en un entorno de Ubuntu de 64 bist.
+
+
+# 1.- Actualizamos 
+
+
+
+sudo apt-get update
+
+
+
+# 2.- Descargamos las imagenes(base de los contenedores) del repositorio de ubuntu 14.04 ó ubuntu 12.04, si no esta en local 
+#lo descarga del repositorio, esta es la manera mas facil de tener una imagen.
+
+
+
+sudo docker run -i -t ubuntu:14.04 /bin/bash
+
+
+
+# Al terminar la instalacion entramos al contendor. Ejemplo   (root@442f9fc32ad2:/      ) el numero despues del @ es el id de #la imagen, para salir escribimos 
+
+
+
+exit
+
+
+ 
+
+**Sí solo quiseramos una imagen lo hacemos de la siguiete manera, Ojo si no pines el tag(14.04) te apareces como latest**
+
+
+
+sudo docker pull ubuntu:14.04
+
+
+
+
+# 3.- Con esto ya tendriamos una imagen ó contenedor con una magen base y poder trabaajar con ella. para poder ver las 
+#imagenes ejecuatamos
+
+
+
+sudo docker images
+sudo docker ps -a
+
+
+
+
+# 4.- Pero si este entorno no satisface las necesidades de mis proyectos entonces como hacer imagenes que se adepten a 
+#nuestros proyectos. Tenemos dos maneras
+
+
+
+	
+# Primera opción: Crear un contenedor apartir de una imagen, modificarlo (Instalando el software que querramos) y entonces
+ aplicamos los cambios para tener una nueva imagen. Creamos un contenedor a partir de una imagen del repositorio training/sinatra
+
+
+
+sudo docker run -t -i training/sinatra /bin/bash
+
+	
+
+# Una vez dentro del contenedor lo podemos modificar añadiendo un programa como el git 
+
+
+
+root@c1bf43cf22d2:/ apt-get install git
+
+
+	
+
+
+# Ahora aplicamos los cambios y guardamos la nueva imagen, escribimos exit para salir de la imagen y ejeciutamos la siguiente comanda.
+
+
+
+
+sudo docker commit -m="Instalando Imagen modificada y GIT" -a="Marcelus Zeron" c1bf43cf22d2 marcelus/sinatra-dev:v0.1
+
+
+
+	
+# -m indica descripcion del la imagen
+	
+# -a indica el autor
+	
+# -c1bf43cf22d2 Id del contenedor del que queremos crear la imagen
+	
+# -  mazp/sinatra-dev:v0.1
+	
+	
+# Sí vemos la lista de imagenes, la nueva imagen esta instalada.
+
+
+	
+	
+sudo docker images
+	
+	
+
+
+# Segunda opción: La primera opción es poco operativa si tenemos que compartirlas entre nuestros entornos de desarrollo
+	
+# por eso la segunda imagen se puede crear en base de un archivo Dockerfile donde cramos las dependencias o caracteriasticas que debería tener nuestra imagen.
+
+	
+# Creamos la carpeta donde queremos nuestra imagen
+
+
+
+mkdir docker-images
+
+
+cd docker-images
+
+	
+
+# Se crea el archivo Dockerfile que llevará las instrucciones de nuestra imagen	
+
+
+
+sudo vi Dockerfile
+
+
+
+	
+# configuramos el archivo Docker file para que tenga un git y una nueva carpeta
+
+
+	
+# Mi primer dockerfile
+
+
+
+
+
+FROM ubuntu:14.04
+
+MAINTAINER Marcelus Zeron <info@mazp.com>
+
+RUN apt-get update && apt-get install -y git
+
+RUN sudo mkdir nueva-carpeta
+
+
+
+	
+# Ahora construimos la imagen en el mismo directorio del archivo Dockerfile
+
+	
+# -t nos permite asociar el nombre del repositorio y el tag (esto opcional) y el . del final indica el path donde esta 		
+# el fichero Dockerfile (podría ser cualquier ruta).
+
+
+
+sudo docker build -t marcelus/ubuntu-git:v0.1 .
+
+	
+
+
+# Cuando se instala todo puedes verlo en la lista de imagenes.
+
+	
+# Ahora podemos ejecutar un contenedor basado en la imagen que hemos creado y ver que tenemos el nuevo-directorio y el 		
+# git
+
+
+	
+
+sudo docker run -i -t marcelus/ubuntu-git:v0.1 /bin/bash
+
+
+
+# 5.- Subir nuestra imagen a Docker Hub que viene a ser algo parecido a Github 
+
+# puedes registrarte https://hub.docker.com/
+
+
+
+$ > sudo docker push marcelus/ubuntu-git
+
+
+
+# Como vemos, nos va a dar un error. Esto es porque sólo se puede subir esa imagen al repositorio si eres el propietario de 
+#marcelus/ubuntu-git. Este es un error muy común y la solución es realmente sencilla, se cambia el nombre marcelus por el 
+#usuario del repositorio de Docker hub.
+
+
+
+
+$ > sudo docker tag marcelus/ubuntu-git:v0.1 marcelusea/ubuntu-git:v0.1
+
+
+
+# Y ahora si podemos subir nuestra imagen al repositorio nos ponemos en la carpeta donde esta el Dockerfile y ponemos
+
+
+$ > sudo docker login
+
+
+$ > sudo docker push mazpea/ubuntu-git
+
+
+
+# 6.- Algunas comandas que tienes que conocer despues de haber creado las imagenes.
+
+
+# Arrancar un contenedor
+
+docker start -a <id_contenedor>
+
+# Parar un contenedor
+
+docker stop <id_contenedor>
+ 
+
+# Conectandonos al contenedor
+
+docker attach <id_contenedor>
+ 
+# Commit de un contenedor
+
+docker commit <id_contenedor>
+ 
+
+# Eliminar un contenedor
+
+docker rm <id_contenedor>
+ 
+
+# Eliminar una imagen
+
+docker rm <id_imagen>	
+
+#Ejemplo: 
+# 1. descargamos la imagen
+# 2.- instanciamos 
+
+
+docker run -d --name sonarqube -p 9000:9000 sonarqube
+
+docker run -d --name sonarqube2 -p 7000:9000 sonarqube
+
+
+
+sudo docker run -d -P training/webapp python app.py
+
+#vemos el puesto y el nombre de la aplicacion
+
+sudo docker ps
+
+ifconfig
+
+sudo docker log -f (nombre de la aplicacion)
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+	
+
